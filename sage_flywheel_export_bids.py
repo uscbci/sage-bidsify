@@ -11,7 +11,7 @@ subject_code = args.subject
 api_key = args.api_key
 
 #destination for data to be saved
-dest_folder = "/Users/jonask/fMRI/SAGE/data/"
+dest_folder = "/Volumes/BCI/SAGE/BIDS_data/"
 
 #construct command line command
 command = "fw export bids --project \"SAGE\" --group \"teich\" --subject \"%s\" %s" %(subject_code,dest_folder)
