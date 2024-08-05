@@ -18,7 +18,7 @@ project_id = "64935df4a60b3a64d6add007"
 project = fw.get(project_id)
 
 #Get the BIDS curation gear
-bids_gear = fw.lookup("gears/curate-bids")
+bids_gear = fw.lookup("gears/curate-bids/2.1.5_1.1.5.2")
 
 #Find the BIDS curation template
 for file in project.files:

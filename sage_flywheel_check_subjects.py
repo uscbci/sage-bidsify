@@ -26,19 +26,32 @@ to_exclude = ["12834"]
 to_bidsify = []
 for subject in project.subjects():
     session = subject.sessions()[0]
-    if 'BIDS' not in session.info.keys() and subject not in to_exclude:
-        to_bidsify.append(subject.code)
+    print("subject %s" % subject.code)
+    if 'BIDS' in session.info.keys():
+        print("BIDS already done")
     else:
-        #first run we just do them all
-        to_bidsify.append(subject.code)
+        if subject not in to_exclude:
+            to_bidsify.append(subject.code)
+        else:
+            print("Excluding this subject")
 
 
 print("The following subjects will need to have the Curate BIDS gear run:")
 print(to_bidsify)
 
 for subject in to_bidsify:
-    # command = "%s/sage_flywheel_fixbids.py %s" % (code_dir,subject)
-    # print(command)
-    # call(command,shell=True)
-    files = os.listdir("/Volumes/BCI/SAGE/BIDS_data/sub-%s/ses-EichSAGE/anat/" % subject)
-    print(files)
+    # Do BIDS curation on flywheel
+    command = "%s/sage_flywheel_bids_gear.py %s %s" % (code_dir,subject,api_key)
+    print(command)
+    call(command,shell=True)
+
+    # Download the BIDS-curated data
+    command = "%s/sage_flywheel_export_bids.py %s %s" % (code_dir,subject,api_key)
+    print(command)
+    call(command,shell=True)
+
+    # Fix BIDS-curated data to meet validation standards
+    command = "%s/sage_flywheel_fixbids.py %s" % (code_dir,subject)
+    print(command)
+    call(command,shell=True)
+
