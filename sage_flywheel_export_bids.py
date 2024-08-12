@@ -6,11 +6,13 @@ import os
 
 #Command line arguments
 parser = argparse.ArgumentParser()
-# parser.add_argument("subject", help="subject to be processed")
-parser.add_argument("api_key", help="flywheel api key")
+parser.add_argument("api_key_file", help="flywheel api key file")
 args = parser.parse_args()
 # subject_code = args.subject
-api_key = args.api_key
+api_key_file = args.api_key_file
+
+with open(api_key_file,'r') as file:
+    api_key = file.read().replace('\n','')
 
 #Set up the flywheel API
 fw = flywheel.Client(api_key)
@@ -49,7 +51,7 @@ print("Already exported (%d):" % numdone)
 print(donefolders)
 
 
-to_bidsify = [elem[4:9] for elem in to_bidsify if elem not in donefolders]
+to_bidsify = [elem for elem in to_bidsify if elem not in donefolders]
 numdone = len(to_bidsify)
 print("Remaining to export (%d):" % numdone)
 print(to_bidsify)

@@ -4,11 +4,12 @@ import argparse
 
 #Command line arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("subject", help="subject to be processed")
-parser.add_argument("api_key", help="flywheel api key")
+parser.add_argument("api_key_file", help="flywheel api key file")
 args = parser.parse_args()
-subject_code = args.subject
-api_key = args.api_key
+api_key_file = args.api_key_file
+
+with open(api_key_file,'r') as file:
+    api_key = file.read().replace('\n','')
 
 #Set up the flywheel API
 fw = flywheel.Client(api_key)
@@ -25,16 +26,28 @@ for file in project.files:
     if file.name == 'sage_bids_template_0.1.json':
         template_file = file
 
-#Find the subject
-subjects = project.subjects()
-for subj in subjects:
-    if subj.code == subject_code:
-        subject = subj
 
-#Set up the gear
-analysis_label = "bids curate"
-inputs = {'template':template_file}
-dest = subject
+to_exclude = ["12834"]
 
-#Run the gear
-job_id = bids_gear.run(analysis_label=analysis_label, inputs=inputs, destination=dest, config={'reset': True})
+to_bidsify = []
+for subject in project.subjects():
+    session = subject.sessions()[0]
+    print("subject %s" % subject.code)
+    if 'BIDS' in session.info.keys():
+        print("BIDS already done")
+    else:
+        if subject not in to_exclude:
+            to_bidsify.append(subject)
+        else:
+            print("Excluding this subject")
+
+for subject in to_bidsify:
+    print("Working on subject %s" % subject.code)
+
+    #Set up the gear
+    analysis_label = "bids curate"
+    inputs = {'template':template_file}
+    dest = subject
+
+    #Run the gear
+    job_id = bids_gear.run(analysis_label=analysis_label, inputs=inputs, destination=dest, config={'reset': True})
