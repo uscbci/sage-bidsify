@@ -58,6 +58,7 @@ print(to_bidsify)
 
 for subject_code in to_bidsify:
 
+    subject_code = subject_code[4:9]
 
     #construct command line command
     command = "fw export bids --project \"SAGE\" --group \"teich\" --subject \"%s\" %s" %(subject_code,dest_folder)
