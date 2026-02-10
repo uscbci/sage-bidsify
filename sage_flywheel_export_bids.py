@@ -34,7 +34,6 @@ for subject in project.subjects():
         print("Do BIDS first")
 
 
-
 #destination for data to be saved
 dest_folder = "/Volumes/BCI/SAGE/BIDS_data/"
 
@@ -49,7 +48,6 @@ print(to_bidsify)
 numdone = len(donefolders)
 print("Already exported (%d):" % numdone)
 print(donefolders)
-
 
 to_bidsify = [elem for elem in to_bidsify if elem not in donefolders]
 numdone = len(to_bidsify)

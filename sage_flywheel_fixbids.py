@@ -22,8 +22,17 @@ for subject_code in allsubjects:
     print("Checking %s" % fmap_folder )
     if (not os.path.exists(fmap_folder)):
         to_do.append(subject_code)
+    else:
+        print("fmap folder exists, will not fix")
 
 to_do = [elem for elem in to_do if "sub-" in elem]
+
+exclude = ["sub-12834","sub-13381"]
+
+to_do = [elem for elem in to_do if elem not in exclude]
+
+
+# to_do = ["sub-13131"]
 print("Subjects to do:")
 print(to_do)
 
@@ -62,15 +71,18 @@ for subject_code in to_do:
     #Copy files to be used as field maps
     src_file = "%s/func/sub-%s_ses-EichSAGE_task-hiAP_run-01_bold.nii.gz" % (inner_folder,subject_code)
     dest_file = "%s/sub-%s_ses-EichSAGE_dir-1_epi.nii.gz" % (fmap_folder,subject_code)
-    shutil.copyfile(src_file,dest_file)
+    if (os.path.exists(src_file)):
+        shutil.copyfile(src_file,dest_file)
 
     src_file = "%s/func/sub-%s_ses-EichSAGE_task-hiPA_run-01_bold.nii.gz" % (inner_folder,subject_code)
     dest_file = "%s/sub-%s_ses-EichSAGE_dir-2_epi.nii.gz" % (fmap_folder,subject_code)
-    shutil.move(src_file,dest_file)
+    if (os.path.exists(src_file)):
+        shutil.move(src_file,dest_file)
 
     # Destroy the unused sidecar
     src_file = "%s/func/sub-%s_ses-EichSAGE_task-hiPA_run-01_bold.json" % (inner_folder,subject_code)
-    os.remove(src_file)
+    if (os.path.exists(src_file)):
+        os.remove(src_file)
 
     src_file = "%s/dir-1_epi.json" % code_dir
     dest_file = "%s/sub-%s_ses-EichSAGE_dir-1_epi.json" % (fmap_folder,subject_code)
